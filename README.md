@@ -26,3 +26,12 @@ matrix-multiplication-ipc/
 ```
 
 ## Requisitos
+
+## Ejecución del programa
+```bash
+./matrix_mul A.txt B.txt 4 C.txt
+```
+- `A.txt`: Archivo de entrada con la primera matriz.
+- `B.txt`: Archivo de entrada con la segunda matriz.
+- `4`: Número de procesos a utilizar.
+- `C.txt`: Archivo de salida donde se guardará el resultado de la multiplicación.
