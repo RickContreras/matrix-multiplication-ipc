@@ -4,7 +4,7 @@ FROM ubuntu:22.04
 # Configurar el entorno
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Instalar dependencias
+# Instalar dependencias (últimas versiones disponibles)
 RUN apt-get update && apt-get install -y \
     build-essential \
     gcc \
@@ -12,11 +12,11 @@ RUN apt-get update && apt-get install -y \
     make \
     python3 \
     python3-pip \
-    golang \
+    golang-go \
     git \
     manpages-dev \
     sudo \
-    && apt-get clean
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Establecer directorio de trabajo
 WORKDIR /workspaces/matrix-multiplication-ipc
