@@ -68,3 +68,20 @@ Luego ejectuta el programa de la siguiente manera:
 - `B_small.txt`: Archivo de entrada con la segunda matriz.
 - `4`: Número de procesos a utilizar.
 - `C_small.txt`: Archivo de salida donde se guardará el resultado de la multiplicación.
+
+## Para la creacion de matrices de prueba
+Para crear matrices de prueba, puedes usar el script `gen_matrix.c` en la carpeta `utils`. Este script genera matrices aleatorias y las guarda en archivos de texto.
+
+### Compilación del script de generación de matrices
+```bash
+gcc -o bin/gen_matrix utils/gen_matrix.c
+```
+
+### Ejecución del script de generación de matrices
+```bash
+./bin/gen_matrix matrix.txt 10 8 100
+```
+- `matrix.txt`: Archivo de salida donde se guardará la matriz generada.
+- `10`: Número de filas de la matriz.
+- `8`: Número de columnas de la matriz.
+- `100`: Valor máximo para los elementos de la matriz.
