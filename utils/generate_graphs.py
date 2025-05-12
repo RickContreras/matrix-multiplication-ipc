@@ -7,6 +7,7 @@ import sys
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 
 def main():
     if len(sys.argv) != 2:
@@ -19,8 +20,8 @@ def main():
         df = pd.read_csv(csv_file)
         
         # Create a directory for plots
-        import os
-        os.makedirs("plots", exist_ok=True)
+        output_dir = "docs/imgs"
+        os.makedirs(output_dir, exist_ok=True)
         
         # Extract unique matrix sizes
         sizes = df['Matrix Size'].unique()
@@ -37,7 +38,7 @@ def main():
         plt.title('Speedup vs. Number of Processes')
         plt.grid(True, linestyle='--', alpha=0.7)
         plt.legend()
-        plt.savefig("plots/speedup_vs_processes.png", dpi=300, bbox_inches='tight')
+        plt.savefig(f"{output_dir}/speedup_vs_processes.png", dpi=300, bbox_inches='tight')
         
         # Plot 2: Execution time vs Process Count for each matrix size
         plt.figure(figsize=(10, 6))
@@ -51,7 +52,7 @@ def main():
         plt.title('Execution Time vs. Number of Processes')
         plt.grid(True, linestyle='--', alpha=0.7)
         plt.legend()
-        plt.savefig("plots/execution_time_vs_processes.png", dpi=300, bbox_inches='tight')
+        plt.savefig(f"{output_dir}/execution_time_vs_processes.png", dpi=300, bbox_inches='tight')
         
         # Plot 3: Efficiency vs Process Count for each matrix size
         plt.figure(figsize=(10, 6))
@@ -67,7 +68,7 @@ def main():
         plt.title('Parallel Efficiency vs. Number of Processes')
         plt.grid(True, linestyle='--', alpha=0.7)
         plt.legend()
-        plt.savefig("plots/efficiency_vs_processes.png", dpi=300, bbox_inches='tight')
+        plt.savefig(f"{output_dir}/efficiency_vs_processes.png", dpi=300, bbox_inches='tight')
         
         # Plot 4: Sequential vs Parallel Time for largest matrix
         largest_matrix = sizes[-1]
@@ -87,9 +88,9 @@ def main():
         plt.xticks(x, largest_df['Process Count'])
         plt.legend()
         plt.grid(True, linestyle='--', alpha=0.3, axis='y')
-        plt.savefig("plots/sequential_vs_parallel.png", dpi=300, bbox_inches='tight')
+        plt.savefig(f"{output_dir}/sequential_vs_parallel.png", dpi=300, bbox_inches='tight')
         
-        print(f"Graphs generated successfully in the 'plots' directory")
+        print(f"Graphs generated successfully in the '{output_dir}' directory")
         
     except Exception as e:
         print(f"Error generating graphs: {e}")
