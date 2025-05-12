@@ -316,4 +316,6 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+/temp
+
 # End of https://www.toptal.com/developers/gitignore/api/c,go,linux,windows,visualstudiocode,python,venv

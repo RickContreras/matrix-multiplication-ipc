@@ -7,10 +7,14 @@ if [ ! -f "./bin/matrix_mul" ] || [ ! -f "./bin/gen_matrix" ]; then
     exit 1
 fi
 
+# Create temp directory if it doesn't exist
+TEMP_DIR="temp"
+mkdir -p $TEMP_DIR
+
 # Test parameters
-SIZES=("100 100 100" "500 500 500" "1000 800 800")
-PROCESS_COUNTS=(1 2 4 8)
-OUTPUT_FILE="performance_results.csv"
+SIZES=("100 100 100" "500 500 500" "1000 800 800" "2000 1500 1500" "3000 2000 2000")
+PROCESS_COUNTS=(1 2 4 8 16 32)
+OUTPUT_FILE="$TEMP_DIR/performance_results.csv"
 
 # Create CSV header
 echo "Matrix Size,Process Count,Sequential Time,Parallel Time,Speedup" > $OUTPUT_FILE
@@ -34,12 +38,12 @@ for size in "${SIZES[@]}"; do
         echo "  Running with $procs processes..."
         
         # Run with redirected output
-        ./bin/matrix_mul ./data/generated/A.txt ./data/generated/B.txt $procs ./data/output/C.txt > temp_output.txt
+        ./bin/matrix_mul ./data/generated/A.txt ./data/generated/B.txt $procs ./data/output/C.txt > $TEMP_DIR/temp_output.txt
         
         # Extract timing information
-        SEQ_TIME=$(extract_time "Sequential multiplication time:" temp_output.txt)
-        PAR_TIME=$(extract_time "Parallel multiplication time" temp_output.txt)
-        SPEEDUP=$(extract_time "Speedup:" temp_output.txt | sed 's/x//') # Elimina la "x" del speedup
+        SEQ_TIME=$(extract_time "Sequential multiplication time:" $TEMP_DIR/temp_output.txt)
+        PAR_TIME=$(extract_time "Parallel multiplication time" $TEMP_DIR/temp_output.txt)
+        SPEEDUP=$(extract_time "Speedup:" $TEMP_DIR/temp_output.txt | sed 's/x//') # Elimina la "x" del speedup
 
         # Save to CSV
         echo "${N}x${M}x${P},$procs,$SEQ_TIME,$PAR_TIME,$SPEEDUP" >> $OUTPUT_FILE
