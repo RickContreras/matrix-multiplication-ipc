@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y \
     git \
     manpages-dev \
     sudo \
+    python3.10-venv \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Establecer directorio de trabajo

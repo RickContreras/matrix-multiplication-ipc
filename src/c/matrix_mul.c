@@ -92,7 +92,8 @@ int main(int argc, char *argv[]) {
     end_time = get_time();
     
     printf("Sequential multiplication time: %.6f seconds\n", end_time - start_time);
-    
+    // Calculate speedup
+    double sequential_time = end_time - start_time;
     // Create shared memory for parallel multiplication
     int shmid_C = shmget(IPC_PRIVATE, N * P * sizeof(double), IPC_CREAT | 0666);
     if (shmid_C < 0) {
@@ -114,8 +115,9 @@ int main(int argc, char *argv[]) {
     printf("Parallel multiplication time (%d processes): %.6f seconds\n", K, end_time - start_time);
     
     // Calculate speedup
-    double sequential_time = end_time - start_time;
-    double speedup = sequential_time > 0 ? (end_time - start_time) / sequential_time : 0;
+
+    double parallel_time = end_time - start_time;
+    double speedup = sequential_time / parallel_time;
     printf("Speedup: %.2fx\n", speedup);
     
     // Verify correctness

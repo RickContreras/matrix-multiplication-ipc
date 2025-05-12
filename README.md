@@ -27,11 +27,11 @@ matrix-multiplication-ipc/
 
 ## Requisitos
 - GCC 9.4.0
-- Python 3.12.1
+- Python 3.10.12
 - Sistemas Unix/Linux (Linux, macOS) o WSL para Windows
 - Go 1.18.1
 
-## Ejecución del programa
+## Ejecución del programa para C
 Primero, asegúrate de compilar el código. Puedes usar el `Makefile` proporcionado para compilar tanto la versión en C como la de Go.
 
 ```bash
@@ -85,3 +85,21 @@ gcc -o bin/gen_matrix utils/gen_matrix.c
 - `10`: Número de filas de la matriz.
 - `8`: Número de columnas de la matriz.
 - `100`: Valor máximo para los elementos de la matriz.
+
+### para probar el rendimiento
+Para probar el rendimiento de las implementaciones, puedes usar el script `performance_test.sh` en la carpeta `utils`. Este script ejecuta las implementaciones en C con diferente numero de procesos.
+
+Primero, asegurate de tener instalado python3 y pip3. Luego, cree un entorno virtual y activa el entorno virtual:
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+Luego, instala las dependencias necesarias:
+```bash
+pip3 install -r requirements.txt
+```
+
+### Ejecución del script de prueba de rendimiento
+```bash
+./utils/performance_test.sh
+```
