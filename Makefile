@@ -1,8 +1,11 @@
+# Compiladores y configuraciones
 CC = gcc
 CFLAGS = -Wall -O2
 GO = go
+PYTHON = python3
+PIP = pip3
 
-# Directories
+# Directorios
 SRC_C_DIR = src/c
 SRC_GO_DIR = src/go
 UTILS_DIR = utils
@@ -10,66 +13,74 @@ BIN_DIR = bin
 DATA_DIR = data
 DATA_INPUT_DIR = $(DATA_DIR)/input
 DATA_OUTPUT_DIR = $(DATA_DIR)/output
+DATA_GENERATED_DIR = $(DATA_DIR)/generated
+TEMP_DIR = temp
+DOCS_IMG_DIR = docs/imgs
+VENV_DIR = venv
 
-# Make sure directories exist
-$(shell mkdir -p $(BIN_DIR) $(DATA_INPUT_DIR) $(DATA_OUTPUT_DIR))
+# Asegurar que los directorios necesarios existan
+$(shell mkdir -p $(BIN_DIR) $(DATA_INPUT_DIR) $(DATA_OUTPUT_DIR) $(DATA_GENERATED_DIR) $(TEMP_DIR) $(DOCS_IMG_DIR))
 
-# Targets
+# Objetivo principal
 all: c_implementation go_implementation utils
 
+# Compilación de implementaciones
 c_implementation: $(BIN_DIR)/matrix_mul
-
 go_implementation: $(BIN_DIR)/matrix_mul_go
+utils: $(BIN_DIR)/gen_matrix
 
-utils: $(BIN_DIR)/gen_matrix $(BIN_DIR)/child_process
-
-# C matrix multiplication
+# Compilación de la implementación en C
 $(BIN_DIR)/matrix_mul: $(SRC_C_DIR)/matrix_mul.c
 	$(CC) $(CFLAGS) -o $@ $<
 
-# Child process used by Go implementation
-$(BIN_DIR)/child_process: $(SRC_C_DIR)/child_process.c
-	$(CC) $(CFLAGS) -o $@ $<
-
-# Matrix generator utility
+# Compilación de la utilidad para generar matrices
 $(BIN_DIR)/gen_matrix: $(UTILS_DIR)/gen_matrix.c
 	$(CC) $(CFLAGS) -o $@ $<
 
-# Go matrix multiplication
+# Compilación de la implementación en Go
 $(BIN_DIR)/matrix_mul_go: $(SRC_GO_DIR)/matrix_mul.go
 	$(GO) build -o $@ $<
 
-# Generate test matrices
+# Configuración del entorno virtual
+venv:
+	$(PYTHON) -m venv $(VENV_DIR)
+
+install_deps: venv
+	$(PIP) install -r requirements.txt
+
+# Generación de matrices de prueba
 gen_test_data: $(BIN_DIR)/gen_matrix
-	./$(BIN_DIR)/gen_matrix $(DATA_INPUT_DIR)/A.txt 10 8 100
-	./$(BIN_DIR)/gen_matrix $(DATA_INPUT_DIR)/B.txt 8 12 100
+	./$(BIN_DIR)/gen_matrix A_generated.txt 12 15 100
+	./$(BIN_DIR)/gen_matrix B_generated.txt 15 10 100
 
-# Run tests with C implementation
-test_c: $(BIN_DIR)/matrix_mul gen_test_data
-	./$(BIN_DIR)/matrix_mul $(DATA_INPUT_DIR)/A.txt $(DATA_INPUT_DIR)/B.txt 4 $(DATA_OUTPUT_DIR)/C.txt
+# Ejecución de las implementaciones
+run_c: $(BIN_DIR)/matrix_mul gen_test_data
+	./$(BIN_DIR)/matrix_mul $(DATA_GENERATED_DIR)/A_generated.txt $(DATA_GENERATED_DIR)/B_generated.txt 4 $(DATA_OUTPUT_DIR)/C_new.txt
 
-# Run tests with Go implementation
-test_go: $(BIN_DIR)/matrix_mul_go gen_test_data
-	./$(BIN_DIR)/matrix_mul_go $(DATA_INPUT_DIR)/A.txt $(DATA_INPUT_DIR)/B.txt 4 $(DATA_OUTPUT_DIR)/C_go.txt
+run_go: $(BIN_DIR)/matrix_mul_go gen_test_data
+	./$(BIN_DIR)/matrix_mul_go $(DATA_GENERATED_DIR)/A_generated.txt $(DATA_GENERATED_DIR)/B_generated.txt 4 $(DATA_OUTPUT_DIR)/C_go_new.txt
 
-# Run performance tests
+# Pruebas de rendimiento
 performance: $(BIN_DIR)/matrix_mul $(UTILS_DIR)/performance_test.sh
 	chmod +x $(UTILS_DIR)/performance_test.sh
-	cd $(UTILS_DIR) && ./performance_test.sh
+	./$(UTILS_DIR)/performance_test.sh
 
-# Generate graphs from performance results
+# Generación de gráficos
 graphs: $(UTILS_DIR)/generate_graphs.py
-	cd $(UTILS_DIR) && python3 generate_graphs.py performance_results.csv
+	$(PYTHON) $(UTILS_DIR)/generate_graphs.py $(TEMP_DIR)/performance_results.csv
 
-# Clean build artifacts
+# Validación de resultados
+validate_results: $(DATA_OUTPUT_DIR)/C.txt $(DATA_OUTPUT_DIR)/C_go.txt tests/test_matrices/expected_result.txt
+	diff -q $(DATA_OUTPUT_DIR)/C.txt tests/test_matrices/expected_result.txt && echo "C implementation results match expected output."
+	diff -q $(DATA_OUTPUT_DIR)/C_go.txt tests/test_matrices/expected_result.txt && echo "Go implementation results match expected output."
+
+# Limpieza
 clean:
 	rm -f $(BIN_DIR)/*
 	find . -name "*.o" -delete
 
-# Clean all generated data
 clean_all: clean
-	rm -f $(DATA_INPUT_DIR)/*.txt $(DATA_OUTPUT_DIR)/*.txt
-	rm -f $(UTILS_DIR)/performance_results.csv
-	rm -rf plots
+	rm -f $(DATA_INPUT_DIR)/*.txt $(DATA_OUTPUT_DIR)/*.txt $(DATA_GENERATED_DIR)/*.txt
+	rm -f $(TEMP_DIR)/*.csv $(TEMP_DIR)/*.txt
 
-.PHONY: all c_implementation go_implementation utils gen_test_data test_c test_go performance graphs clean clean_all
+.PHONY: all c_implementation go_implementation utils venv install_deps gen_test_data run_c run_go performance graphs validate_results clean clean_all

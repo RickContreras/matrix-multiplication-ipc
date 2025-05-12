@@ -1,105 +1,218 @@
-# Multiplicación de Matrices Paralela usando Procesos
+# 🚀 Multiplicación de Matrices Paralela usando Procesos
 
-Este proyecto implementa multiplicación de matrices utilizando procesos para paralelizar el cálculo, comparando el rendimiento entre implementaciones secuenciales y paralelas usando mecanismos de comunicación entre procesos (IPC).
+[![Licencia: MIT](https://img.shields.io/badge/Licencia-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+![C](https://img.shields.io/badge/C-11-00599C?logo=c&logoColor=white)
+![Go](https://img.shields.io/badge/Go-1.18-00ADD8?logo=go&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.10-3776AB?logo=python&logoColor=white)
+![Linux](https://img.shields.io/badge/Linux-Compatible-FCC624?logo=linux&logoColor=black)
+![GCC](https://img.shields.io/badge/GCC-9.4.0-4EAA25?logo=gnu&logoColor=white)
+![Makefile](https://img.shields.io/badge/Makefile-Automation-064F8C?logo=gnu&logoColor=white)
+![Codespaces](https://img.shields.io/badge/Codespaces-Enabled-blue?logo=github)
+![DevContainer](https://img.shields.io/badge/DevContainer-Enabled-blue?logo=visualstudiocode)
 
-## Descripción
+Este proyecto implementa la **multiplicación de matrices** utilizando procesos para paralelizar el cálculo, comparando el rendimiento entre implementaciones secuenciales y paralelas mediante mecanismos de comunicación entre procesos (IPC).
 
-La multiplicación de matrices es una operación computacionalmente intensiva que puede beneficiarse significativamente de la paralelización. Este proyecto divide la operación entre múltiples procesos usando `fork()` en C y técnicas de paralelismo en Go, permitiendo una comparación directa de rendimiento.
+---
 
-## Características Principales
+## ⚡ Abrir en Codespaces
 
-## Estructura del Repositorio
+Si deseas trabajar en este proyecto directamente en un entorno preconfigurado, haz clic en el siguiente botón para abrirlo en **GitHub Codespaces**:
 
-```
+<div align="center">
+
+[![Abrir en Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?template_repository=RickContreras/matrix-multiplication-ipc)
+
+</div>
+
+---
+
+## 📖 Descripción
+
+La multiplicación de matrices es una operación computacionalmente intensiva que puede beneficiarse significativamente de la paralelización. Este proyecto divide la operación entre múltiples procesos usando:
+- **`fork()` en C** para paralelismo a nivel de procesos.
+- **Técnicas de paralelismo en Go** para una comparación directa de rendimiento.
+
+---
+
+## 📂 Estructura del Repositorio
+
+```plaintext
 matrix-multiplication-ipc/
 ├── src/             # Código fuente principal
 │   ├── c/           # Implementación en C
 │   └── go/          # Implementación en Go
 ├── utils/           # Utilidades y scripts
 ├── docs/            # Documentación y reporte
+│   └── imgs/        # Gráficos generados
 ├── data/            # Matrices de entrada/salida
 │   ├── input/
 │   └── output/
 ├── tests/           # Casos de prueba
-├── Makefile
-└── README.md
+│   └── test_matrices/
+├── .devcontainer/   # Configuración para Codespaces y devcontainer
+├── Makefile         # Archivo para automatización de tareas
+└── README.md        # Este archivo
 ```
 
-## Requisitos
-- GCC 9.4.0
-- Python 3.10.12
-- Sistemas Unix/Linux (Linux, macOS) o WSL para Windows
-- Go 1.18.1
+---
 
-## Ejecución del programa para C
-Primero, asegúrate de compilar el código. Puedes usar el `Makefile` proporcionado para compilar tanto la versión en C como la de Go.
+## 🛠️ Requisitos
 
-```bash
-make c_implementation
-```
-Luego ejectuta el programa de la siguiente manera:
+- **GCC** 9.4.0
+- **Python** 3.10.12
+- **Go** 1.18.1
+- Sistemas **Unix/Linux** o **WSL** para Windows
 
-```bash
-./bin/matrix_mul data/input/A.txt data/input/B.txt 4 data/output/C.txt
-```
-- `A.txt`: Archivo de entrada con la primera matriz.
-- `B.txt`: Archivo de entrada con la segunda matriz.
-- `4`: Número de procesos a utilizar.
-- `C.txt`: Archivo de salida donde se guardará el resultado de la multiplicación.
+---
 
-## Ejecución del programa para Go
+## ⚙️ Configuración Inicial
 
-Primera opcion:
-```bash
-go run src/go/matrix_mul.go data/input/A.txt data/input/B.txt 4 data/output/C.txt 
-```
+### 🔹 Crear y Configurar el Entorno de trabajo
 
-Segunda opcion, asegúrate de compilar el código. Puedes usar el `Makefile` proporcionado para compilar  la versión de Go.
+1. **Crear y activar el entorno virtual**:
+   ```bash
+   make venv
+   source venv/bin/activate
+   ```
 
-```bash
-make go_implementation
-```
-Luego ejectuta el programa de la siguiente manera:
+2. **Instalar las dependencias necesarias**:
+   ```bash
+   make install_deps
+   ```
 
-```bash
-./bin/matrix_mul_go data/input/A.txt data/input/B.txt 4 data/output/C.txt
-```
-- `A.txt`: Archivo de entrada con la primera matriz.
-- `B.txt`: Archivo de entrada con la segunda matriz.
-- `4`: Número de procesos a utilizar.
-- `C.txt`: Archivo de salida donde se guardará el resultado de la multiplicación.
+3. **Compila todos los archivos importantes**:
+   ```bash
+   make
+   ```
 
-## Para la creacion de matrices de prueba
-Para crear matrices de prueba, puedes usar el script `gen_matrix.c` en la carpeta `utils`. Este script genera matrices aleatorias y las guarda en archivos de texto.
+---
 
-### Compilación del script de generación de matrices
-```bash
-gcc -o bin/gen_matrix utils/gen_matrix.c
-```
+## 🚀 Ejecución del Programa
 
-### Ejecución del script de generación de matrices
-```bash
-./bin/gen_matrix matrix.txt 10 8 100
-```
-- `matrix.txt`: Archivo de salida donde se guardará la matriz generada.
-- `10`: Número de filas de la matriz.
-- `8`: Número de columnas de la matriz.
-- `100`: Valor máximo para los elementos de la matriz.
+### 🔹 Para la Implementación en C
 
-### para probar el rendimiento
-Para probar el rendimiento de las implementaciones, puedes usar el script `performance_test.sh` en la carpeta `utils`. Este script ejecuta las implementaciones en C con diferente numero de procesos.
+1. **Compila el código**:
+   ```bash
+   make c_implementation
+   ```
 
-Primero, asegurate de tener instalado python3 y pip3. Luego, cree un entorno virtual y activa el entorno virtual:
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
-Luego, instala las dependencias necesarias:
-```bash
-pip3 install -r requirements.txt
-```
+2. **Ejecuta el programa**:
+   ```bash
+   make run_c
+   ```
 
-### Ejecución del script de prueba de rendimiento
+> **🔔 Alternativa**:
+> ```bash  
+> ./bin/matrix_mul data/input/A.txt data/input/B.txt 4 data/output/C.txt
+> ```
+
+---
+
+### 🔹 Para la Implementación en Go
+
+#### Opción 1: Ejecutar directamente
+
+   ```bash
+   go run src/go/matrix_mul.go data/input/A.txt data/input/B.txt 4 data/output/C.txt
+   ```
+
+#### Opción 2: Compilar y ejecutar
+
+1. **Compila el código**:
+   ```bash
+   make go_implementation
+   ```
+
+2. **Ejecuta el programa**:
+   ```bash
+   make run_go 
+   ```
+
+
+> **🔔 Alternativa**:
+> ```bash  
+> ./bin/matrix_mul_go data/input/A.txt data/input/B.txt 4 data/output/C.txt 
+> ```
+
+---
+
+## 🧪 Generación de Matrices de Prueba
+
+1. **Compila el script de generación de matrices**:
+   ```bash
+   gcc -o bin/gen_matrix utils/gen_matrix.c
+   ```
+
+2. **Genera una matriz de prueba**:
+   ```bash
+   ./bin/gen_matrix matrix.txt 10 8 100
+   ```
+   - `matrix.txt`: Archivo de salida que se guardará en `data/generated`.
+   - `10`: Número de filas de la matriz.
+   - `8`: Número de columnas de la matriz.
+   - `100`: Valor máximo para los elementos de la matriz.
+
+---
+
+## 📊 Pruebas de Rendimiento
+
+1. **Ejecuta las pruebas de rendimiento**:
+   ```bash
+   make performance
+   ```
+
+#### Alternativa
+
 ```bash
 ./utils/performance_test.sh
 ```
+
+2. **Genera gráficos a partir de los resultados**:
+   ```bash
+   make graphs
+   ```
+
+> **⚠️ Importante**:
+> * Debes tener instalado los requirements.txt en local o en tu venv.
+
+---
+
+## 🧹 Limpieza
+
+- **Eliminar archivos binarios**:
+  ```bash
+  make clean
+  ```
+
+- **Eliminar todos los datos generados**:
+  ```bash
+  make clean_all
+  ```
+
+---
+
+## 📋 Casos de Prueba
+
+Los casos de prueba se encuentran en la carpeta `tests/test_matrices`. Puedes validar los resultados generados comparándolos con los resultados esperados:
+
+```bash
+make validate_results
+```
+
+---
+
+## 📜 Licencia
+
+Este proyecto está bajo la licencia **MIT**. Consulta el archivo `LICENSE` para más detalles.
+
+---
+
+## 👨‍💻 Autor
+
+Desarrollado por RickContreras. Si tienes preguntas o sugerencias, no dudes en contactarme.
+
+---
+
+## 🌟 ¡Contribuye!
+
+¿Tienes ideas para mejorar este proyecto? ¡Las contribuciones son bienvenidas! Por favor, abre un **issue** o envía un **pull request**.
